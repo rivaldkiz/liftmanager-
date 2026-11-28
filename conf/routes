@@ -15,6 +15,8 @@ GET     /assets/*file               controllers.Assets.versioned(path="/public",
 #ROUTES D'AUTHENTIFICATION
 GET /register   controllers.AuthController.to_register()
 GET /login      controllers.AuthController.to_login()
+GET /logout      controllers.AuthController.logout()
+
 
 POST /register  controllers.AuthController.register()
 POST /login     controllers.AuthController.login()
@@ -22,3 +24,15 @@ POST /login     controllers.AuthController.login()
 
 #ROUTE DE DASHBORD
 GET /dashbord       controllers.UtilisateurController.dashbord()
+
+
+#ROUTE DE DASHBORD
+
+GET /resident       controllers.UtilisateurController.resident()
+
+
+#ROUTE POUR LES BATIMENTS
+#GET /filter
+
+#ROUTE POUR LES APPELS
+POST /create        controllers.AppelController.save()

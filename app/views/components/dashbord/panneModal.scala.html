@@ -1,0 +1,105 @@
+@*
+ * Bouton + modal « Signaler une panne »
+ * @param ascenseurs  ascenseurs du bâtiment actif
+ * @param action      route POST qui enregistre la panne
+ *@
+@(ascenseurs: Seq[models.Ascenseur],
+  action: Call)(implicit request: RequestHeader)
+
+@import helper._
+
+<!-- Bouton d'ouverture -->
+<div class="mt-12 flex justify-center">
+  <button id="open-panne-modal" type="button"
+    class="bg-surface-container-lowest text-on-surface hover:bg-surface-container-low font-label-md text-label-md px-5 py-2.5 rounded-lg shadow-sm transition-colors">
+    Signaler une panne
+  </button>
+</div>
+
+<!-- Modal -->
+<div class="fixed inset-0 z-50 hidden flex items-center justify-center p-4" id="panne-modal">
+  <div class="fixed inset-0 bg-on-surface/40 backdrop-blur-xs transition-opacity" id="modal-backdrop"></div>
+
+  <div class="relative bg-surface-container-lowest rounded-xl shadow-xl max-w-md w-full p-6 z-10">
+    <div class="flex items-center justify-between mb-4">
+      <h3 class="font-headline-sm text-headline-sm text-on-surface">Signaler une panne</h3>
+      <button id="close-modal-icon" type="button"
+        class="text-on-surface-variant hover:text-on-surface rounded-DEFAULT p-1 transition-colors">
+        <span class="material-symbols-outlined text-[20px]">close</span>
+      </button>
+    </div>
+
+    <form class="flex flex-col gap-4" method="POST" action="@action">
+      @CSRF.formField
+      <input type="hidden" name="idBatiment" value="@request.getQueryString("idBatiment").getOrElse("")">
+
+      <!-- Ascenseur du bâtiment actuel -->
+      <div class="flex flex-col gap-space-sm">
+        <label class="font-label-md text-label-md text-on-surface" for="panne-elevator">Ascenseur</label>
+        <div class="relative">
+          <select id="panne-elevator" name="idAscenseur" required
+            class="w-full h-12 bg-surface-container-low text-on-surface font-body-md text-body-md rounded-lg px-3 appearance-none focus:outline-none shadow-sm cursor-pointer">
+            @if(ascenseurs.isEmpty) {
+              <option value="">Aucun ascenseur</option>
+            } else {
+              @for(a <- ascenseurs; id <- a.idAscenseur) {
+                <option value="@id">@a.nom</option>
+              }
+            }
+          </select>
+          <span class="material-symbols-outlined pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px]">expand_more</span>
+        </div>
+      </div>
+
+      <!-- Catégorie -->
+      <div class="flex flex-col gap-space-sm">
+        <label class="font-label-md text-label-md text-on-surface" for="panne-category">Catégorie</label>
+        <div class="relative">
+          <select id="panne-category" name="categorie" required
+            class="w-full h-12 bg-surface-container-low text-on-surface font-body-md text-body-md rounded-lg px-3 appearance-none focus:outline-none shadow-sm cursor-pointer">
+            <option value="ELECTRIQUE">Électrique</option>
+            <option value="MECANIQUE">Mécanique</option>
+            <option value="ELECTRONIQUE">Électronique</option>
+            <option value="AUTRE">Autre</option>
+          </select>
+          <span class="material-symbols-outlined pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px]">expand_more</span>
+        </div>
+      </div>
+
+      <!-- Description -->
+      <div class="flex flex-col gap-space-sm">
+        <label class="font-label-md text-label-md text-on-surface" for="panne-description">Description</label>
+        <textarea id="panne-description" name="description" rows="3" required
+          placeholder="Décrivez brièvement le dysfonctionnement constaté..."
+          class="w-full bg-surface-container-low text-on-surface placeholder:text-outline font-body-md text-body-md rounded-lg p-3 focus:outline-none shadow-sm resize-none"></textarea>
+      </div>
+
+      <div class="flex items-center justify-end gap-3 mt-4 pt-2">
+        <button id="cancel-modal-btn" type="button"
+          class="h-10 px-4 bg-surface-container-high hover:bg-surface-container-highest text-on-surface font-label-md text-label-md rounded-lg transition-colors">
+          Annuler
+        </button>
+        <button type="submit" @if(ascenseurs.isEmpty) { disabled }
+          class="h-10 px-5 bg-secondary hover:bg-primary-container text-on-secondary font-label-md text-label-md rounded-lg transition-colors shadow-sm disabled:opacity-60">
+          Envoyer
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  (function () {
+    const modal = document.getElementById("panne-modal");
+    if (!modal) return;
+
+    const ouvrir = () => modal.classList.remove("hidden");
+    const fermer = () => modal.classList.add("hidden");
+
+    document.getElementById("open-panne-modal").addEventListener("click", ouvrir);
+    document.getElementById("close-modal-icon").addEventListener("click", fermer);
+    document.getElementById("cancel-modal-btn").addEventListener("click", fermer);
+    document.getElementById("modal-backdrop").addEventListener("click", fermer);
+    document.addEventListener("keydown", e => { if (e.key === "Escape") fermer(); });
+  })();
+</script>

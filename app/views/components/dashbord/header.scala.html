@@ -11,7 +11,7 @@
     @components.header(utilisateur, roleNom, nbNonLues, "notifications")
 *@
 
-@(utilisateur: models.Utilisateur, roleNom: String, notificationsNonLues: Int, pageActive: String = "")
+@(utilisateur: models.Utilisateur, roleNom: String="", notificationsNonLues: Int = 4, pageActive: String = "")
 
 @* Seul endroit à adapter si vos URL changent *@
 @defining(roleNom match {

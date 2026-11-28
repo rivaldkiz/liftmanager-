@@ -18,8 +18,8 @@ object Enums {
     val values = Seq(Actif, Inactif)
   }
   object DirectionAscenseur {
-    val Montee = "MONTEE"; val Descente = "DESCENTE"; val Arret = "ARRET"
-    val values = Seq(Montee, Descente, Arret)
+    val Monte = "MONTEE"; val Descend = "DESCENTE"; val Arret = "ARRET"
+    val values = Seq(Monte, Descend, Arret)
   }
   object EtatAscenseur {
     val Arret = "ARRET"; val Montee = "MONTEE"; val Descente = "DESCENTE";

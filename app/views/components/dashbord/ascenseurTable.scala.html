@@ -1,0 +1,71 @@
+@*
+ * Tableau des ascenseurs du bâtiment actif
+ * @param ascenseurs ascenseurs du bâtiment
+ * @param passagers  nombre de personnes à bord par idAscenseur
+ *@
+@(ascenseurs: Seq[models.Ascenseur],
+  passagers: Map[Long, Int] = Map.empty)
+
+@direction(a: models.Ascenseur) = {
+  @if(a.etat == "OUVERT") {
+    <td class="py-3 px-2 text-on-surface-variant font-body-sm text-body-sm">• Portes ouvertes</td>
+  } else {
+    @a.direction match {
+      case "MONTEE"   => { <td class="py-3 px-2 text-on-surface-variant text-base">↑</td> }
+      case "DESCENTE" => { <td class="py-3 px-2 text-on-surface-variant text-base">↓</td> }
+      case _          => { <td class="py-3 px-2 text-outline">—</td> }
+    }
+  }
+}
+
+@etat(e: String) = @{
+  e match {
+    case "MONTEE"      => ("En montée",    "bg-secondary-fixed text-on-secondary-fixed-variant")
+    case "DESCENTE"    => ("En descente",  "bg-secondary-fixed text-on-secondary-fixed-variant")
+    case "OUVERTURE"   => ("Ouverture",    "bg-tertiary-fixed text-on-tertiary-fixed")
+    case "OUVERT"      => ("Ouvert",       "bg-tertiary-fixed text-on-tertiary-fixed")
+    case "FERMETURE"   => ("Fermeture",    "bg-tertiary-fixed text-on-tertiary-fixed")
+    case "PANNE"       => ("En panne",     "bg-error-container text-on-error-container")
+    case "MAINTENANCE" => ("Maintenance",  "bg-error-container text-on-error-container")
+    case _             => ("Disponible",   "bg-surface-container-highest text-on-surface-variant")
+  }
+}
+
+<section class="bg-surface-container-lowest rounded-xl p-6 shadow-sm">
+  <h2 class="font-headline-sm text-headline-sm text-on-surface mb-4">Ascenseurs</h2>
+
+  @if(ascenseurs.isEmpty) {
+    <p class="font-body-md text-body-md text-on-surface-variant">Aucun ascenseur pour ce bâtiment.</p>
+  } else {
+    <div class="overflow-x-auto">
+      <table class="w-full text-left font-body-md text-body-md">
+        <thead>
+          <tr class="bg-surface-container-low text-on-surface-variant font-label-md text-label-md">
+            <th class="py-2.5 px-3 rounded-l-lg font-medium">Cabine</th>
+            <th class="py-2.5 px-2 font-medium">Étage</th>
+            <th class="py-2.5 px-2 font-medium">Direction</th>
+            <th class="py-2.5 px-3 font-medium">État</th>
+            <th class="py-2.5 px-3 rounded-r-lg font-medium text-right">Personnes</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-surface-container-high">
+          @for(a <- ascenseurs) {
+            <tr class="hover:bg-surface-bright transition-colors">
+              <td class="py-3 px-3 font-label-md text-label-md text-on-surface">@a.nom</td>
+              <td class="py-3 px-2 text-on-surface font-medium">@a.position</td>
+              @direction(a)
+              <td class="py-3 px-3">
+                <span class="@etat(a.etat)._2 font-label-sm text-label-sm px-2.5 py-0.5 rounded-full inline-block">
+                  @etat(a.etat)._1
+                </span>
+              </td>
+              <td class="py-3 px-3 text-right text-on-surface-variant">
+                @a.idAscenseur.flatMap(passagers.get).getOrElse(0)/@a.capacitePersonnes
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</section>

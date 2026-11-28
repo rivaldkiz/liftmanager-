@@ -1,0 +1,12 @@
+@(inputId: String,
+  fieldName: String,
+  label: String,
+  checked: Boolean = false,
+  value: String = "true")
+
+<div class="flex items-center gap-space-sm select-none pt-1">
+  <input class="w-4 h-4 rounded text-secondary focus:ring-0 focus:outline-none cursor-pointer"
+         id="@inputId" name="@fieldName" type="checkbox" value="@value"
+         @if(checked) { checked } />
+  <label class="font-body-md text-body-md text-on-surface-variant cursor-pointer" for="@inputId">@label</label>
+</div>

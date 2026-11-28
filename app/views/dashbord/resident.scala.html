@@ -1,11 +1,42 @@
-@(user: Utilisateur)(implicit request: RequestHeader)
+@(
+    user: models.Utilisateur,
+    batiments: Seq[models.Batiment],
+    etages: Seq[models.Etage],
+    ascenseurs: Seq[models.Ascenseur],
+    pannes: Seq[models.Panne],
+    appels: Seq[models.Appel],
+    idBatiment: Option[Long]
+)(implicit request: RequestHeader)
 
 
-@main("dashboard-resident"){
+@main("dashboard-resident-user.nom"){
+
+     
+   
+    @components.dashbord.header(utilisateur = user, "notifications")
+
+   
+
+    <div class="mb-8 flex flex-col gap-2">
 
      @components.feedback.flash()
-   
-    @*@components.header(utilisateur, roleNom, nbNonLues, "notifications")*@ 
+            @*// cree une erreur car il n y a pas les appel de l utlisateur*@
+      @components.dashbord.batimentSelect(
+        batiments   = batiments,
+        selectedId  = idBatiment,
+        etages      = etages,
+        ascenseurs  = ascenseurs,
+        urlPage     = routes.UtilisateurController.resident(),   
+        appelAction = routes.AppelController.save()  
+        )
+    </div>
 
+    @components.dashbord.panneModal(ascenseurs, routes.AuthController.to_login())
+
+
+    
+
+
+    @*@components.dashbord.appelActif( appel = "", departNom = "Étage 3",destinationNom =  "Étage 7", ascenseurNom = Some("2"))*@
 
 }

@@ -195,6 +195,10 @@ class UtilisateurRepository @Inject() (
     )
   }
 
+  // =====================================================
+  // 6. CHERCHER UN ROLE PAR SON ID
+  // =====================================================
+
   def findRoleById(idRole: Long): Future[Option[String]] = {
     val query = sql"""
     SELECT NOM_ROLE
@@ -203,6 +207,21 @@ class UtilisateurRepository @Inject() (
   """.as[String].headOption
 
     db.run(query)
+  }
+
+  // =====================================================
+// 7. VERIFIER SI UN UTILISATEUR EXISTE PAR SON ID
+// =====================================================
+
+  def existsById(idUser: Long): Future[Boolean] = {
+
+    db.run(
+      sql"""
+      SELECT COUNT(*)
+      FROM UTILISATEUR
+      WHERE ID_USER = $idUser
+    """.as[Long]
+    ).map(_.headOption.getOrElse(0L) > 0)
   }
 
 }

@@ -1,0 +1,58 @@
+@*
+ * Formulaire d'appel d'ascenseur
+ * @param etages        étages du bâtiment actif
+ * @param action        route POST de création d'appel
+ * @param departId      étage de départ présélectionné
+ * @param destinationId étage de destination présélectionné
+ *@
+@(etages: Seq[models.Etage],
+  action: Call,
+  departId: Option[Long] = None,
+  destinationId: Option[Long] = None)(implicit request: RequestHeader)
+
+@import helper._
+
+<section class="bg-surface-container-lowest rounded-xl p-6 shadow-sm">
+  <h2 class="font-headline-sm text-headline-sm text-on-surface mb-4">Appeler un ascenseur</h2>
+
+  <form class="flex flex-col gap-5" id="call-form" method="POST" action="@action">
+    @CSRF.formField
+
+    <div class="grid grid-cols-2 gap-4">
+      @components.dashbord.etageSelect(etages, "floor-depart", "depart", "Départ", departId)
+      @components.dashbord.etageSelect(etages, "floor-destination", "destination", "Destination", destinationId)
+    </div>
+
+    <p id="call-form-error" class="hidden font-body-sm text-body-sm text-error">
+      Le départ et la destination doivent être différents.
+    </p>
+
+    @components.ui.checkbox("luggage-check", "avecBagages", "J'ai des bagages")
+
+    <button
+      class="h-12 w-full bg-secondary hover:bg-primary-container text-on-secondary font-label-lg text-label-lg rounded-lg shadow-sm transition-colors flex items-center justify-center disabled:opacity-60 disabled:cursor-not-allowed"
+      type="submit"
+      @if(etages.size < 2) { disabled }>
+      Appeler
+    </button>
+  </form>
+</section>
+
+<script>
+  (function () {
+    const form   = document.getElementById("call-form");
+    const depart = document.getElementById("floor-depart");
+    const dest   = document.getElementById("floor-destination");
+    const err    = document.getElementById("call-form-error");
+    if (!form || !depart || !dest) return;
+
+    function verifier() {
+      const identiques = depart.value !== "" && depart.value === dest.value;
+      err.classList.toggle("hidden", !identiques);
+      return !identiques;
+    }
+
+    depart.addEventListener("change", verifier);
+   
+  })();
+</script>

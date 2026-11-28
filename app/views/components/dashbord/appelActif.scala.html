@@ -1,0 +1,66 @@
+@*
+ * Carte « Mon appel »
+ * @param appel     appel actif de l'utilisateur (None si aucun)
+ * @param etages    étages du bâtiment actif
+ * @param ascenseur ascenseur affecté à l'appel (None si pas encore affecté)
+ *@
+@(appel: Option[models.Appel],
+  etages: Seq[models.Etage],
+  ascenseur: Option[models.Ascenseur])(implicit request: RequestHeader)
+
+@import helper._
+
+@nomEtage(id: Long) = @{
+  etages.find(_.idEtage.contains(id))
+    .map(e => e.nom.getOrElse(s"Étage ${e.numero}"))
+    .getOrElse("Étage inconnu")
+}
+
+<section class="bg-surface-container-lowest rounded-xl p-6 shadow-sm" id="active-call-card">
+  <h2 class="font-headline-sm text-headline-sm text-on-surface mb-3">Mon appel</h2>
+
+  @appel match {
+    case None => {
+      <p class="font-body-md text-body-md text-on-surface-variant">Aucun appel en cours.</p>
+    }
+
+    case Some(a) => {
+      <div class="font-headline-sm text-headline-sm text-on-surface" id="call-route-text">
+        @nomEtage(a.depart) → @nomEtage(a.destination)
+      </div>
+
+      <div class="mt-2">
+        <span id="call-badge"
+              class="bg-secondary-fixed text-on-secondary-fixed-variant font-label-sm text-label-sm px-3 py-1 rounded-full inline-block">
+          @ascenseur.map(asc => s"Affecté à l'ascenseur ${asc.nom}").getOrElse("En attente d'affectation")
+        </span>
+      </div>
+
+      <p class="font-body-md text-body-md text-on-surface-variant mt-2" id="call-status-msg">
+        @ascenseur.map(asc => s"L'ascenseur est à l'étage ${asc.position}").getOrElse("Recherche d'un ascenseur…")
+      </p>
+
+      <div class="mt-4">
+        @if(a.statut == "AFFECTE") {
+          <form method="POST" action="@routes.AuthController.to_login()">
+            @CSRF.formField
+            <button id="board-btn" type="submit"
+              class="h-12 w-full bg-tertiary-container hover:bg-tertiary text-on-tertiary font-label-lg text-label-lg rounded-lg shadow-sm transition-colors flex items-center justify-center">
+              Embarquer
+            </button>
+          </form>
+        }
+
+        @if(a.statut == "EN_ATTENTE" || a.statut == "AFFECTE") {
+          <form method="POST" action="@routes.AuthController.to_login()">
+            @CSRF.formField
+            <button id="cancel-btn" type="submit"
+              class="font-body-sm text-body-sm text-outline hover:text-on-surface-variant underline block text-center mt-2 cursor-pointer w-full bg-transparent">
+              Annuler
+            </button>
+          </form>
+        }
+      </div>
+    }
+  }
+</section>

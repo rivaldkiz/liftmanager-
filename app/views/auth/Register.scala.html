@@ -45,7 +45,7 @@
           )
 
             <!-- Form -->
-            @components.forms.simpleForm(routes.AuthController.register) {
+            @components.forms.simpleForm(routes.AuthController.register, title = "Créer un compte") {
                <!-- Field: Nom complet -->
               @components.forms.inputField(
                 name = "nom",

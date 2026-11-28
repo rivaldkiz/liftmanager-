@@ -1,5 +1,5 @@
 @*
-  Affiche les messages flash Play (clés "error" et "success").
+  Affiche les messages flash Play (clés "error" et "success"), texte blanc.
 
   Utilisation :
     @components.flashMessages()
@@ -10,18 +10,18 @@
 @defining(request.flash) { flash =>
   @* (clé flash, icône Material, classes de couleur, rôle ARIA) *@
   @for((cle, icone, couleurs, role) <- Seq(
-    ("error",   "error",        "bg-error-container text-on-error-container border-error",       "alert"),
-    ("success", "check_circle", "bg-tertiary-container text-on-tertiary-container border-tertiary", "status")
+    ("error",   "error",        "bg-error text-white border-error",         "alert"),
+    ("success", "check_circle", "bg-green-600 text-white border-green-600", "status")
   )) {
     @flash.get(cle).map { message =>
-      <div class="w-full max-w-[1100px] mx-auto px-gutter pt-space-md">
+      <div class="w-full max-w-[1100px] mx-auto mb-2 px-gutter pt-space-md">
         <div role="@role"
              class="flex items-start gap-space-sm rounded-lg border px-space-md py-space-sm @couleurs">
           <span class="material-symbols-outlined text-[20px] mt-0.5">@icone</span>
           <p class="flex-1 font-label-md text-label-md">@message</p>
           <button type="button"
                   aria-label="Fermer le message"
-                  class="opacity-70 hover:opacity-100 transition-opacity"
+                  class="opacity-80 hover:opacity-100 transition-opacity"
                   onclick="this.closest('[role]').parentElement.remove()">
             <span class="material-symbols-outlined text-[18px]">close</span>
           </button>

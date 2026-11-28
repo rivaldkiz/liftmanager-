@@ -1,6 +1,7 @@
 @(
   action: Call,
-  style: Option[String] = None
+  style: Option[String] = None,
+  title: String
 )(content: Html)(implicit request: RequestHeader)
 
 
@@ -12,7 +13,7 @@
   @content
 
  @components.ui.button(
-    label = "Créer un compte",
+    label = title,
     icon = Some("arrow_forward"),
     btnType = "submit",
     fullWidth = true,

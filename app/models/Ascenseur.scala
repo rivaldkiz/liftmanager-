@@ -1,5 +1,6 @@
 package models
 import models.Enums
+import play.api.libs.json._
 
 case class Ascenseur(
     idAscenseur: Option[Long],
@@ -13,3 +14,7 @@ case class Ascenseur(
     etat: String = Enums.EtatAscenseur.Arret,
     isVirtual: Boolean = false
 )
+
+object Ascenseur {
+  implicit val format: OFormat[Ascenseur] = Json.format[Ascenseur]
+}

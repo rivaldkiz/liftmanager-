@@ -1,0 +1,37 @@
+@*
+ * Sélecteur d'étage réutilisable
+ * @param etages     étages à proposer (triés par numéro)
+ * @param selectId   id du <select> (unique dans la page)
+ * @param fieldName  name du <select>
+ * @param label      libellé affiché
+ * @param selectedId étage présélectionné
+ *@
+@(etages: Seq[models.Etage],
+  selectId: String,
+  fieldName: String,
+  label: String,
+  selectedId: Option[Long] = None)
+
+<div class="flex flex-col gap-space-sm">
+  <label class="font-label-md text-label-md text-on-surface" for="@selectId">@label</label>
+  <div class="relative">
+    <select
+      class="w-full h-12 bg-surface-container-lowest text-on-surface font-body-md text-body-md rounded-lg px-3 appearance-none focus:outline-none shadow-sm cursor-pointer disabled:cursor-not-allowed disabled:opacity-60"
+      id="@selectId"
+      name="@fieldName"
+      required
+      @if(etages.isEmpty) { disabled }>
+
+      @if(etages.isEmpty) {
+        <option value="" selected>Aucun étage</option>
+      } else {
+        @for(e <- etages.sortBy(_.numero); id <- e.idEtage) {
+          <option value="@id" data-numero="@e.numero" @if(selectedId.contains(id)) { selected }>
+            @e.nom.filter(_.trim.nonEmpty).getOrElse(s"Étage ${e.numero}")
+          </option>
+        }
+      }
+    </select>
+    <span class="material-symbols-outlined pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px]">expand_more</span>
+  </div>
+</div>

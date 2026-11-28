@@ -30,8 +30,16 @@
  </head>
 
 <body class="bg-background font-body-md text-on-surface min-h-screen">
+  
+  <main class="w-full pt-16 bg-background">
+    <div class="max-w-[1100px] mx-auto px-gutter py-space-xl">
+      <div class="flex flex-col w-full">
+        <div class="max-w-[1100px] w-full mx-auto px-6 py-8">
     @content
-
+        </div>
+      </div>
+    </div>
+  </main>
     <script src="@routes.Assets.versioned("javascripts/main.js")" type="text/javascript"></script>
  
 </body>
