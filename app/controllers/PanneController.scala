@@ -19,14 +19,8 @@ class PanneController @Inject() (
   // RECUPERER L'UTILISATEUR CONNECTE
   // =====================================================
 
-  private def utilisateurConnecte(
-      request: RequestHeader
-  ): Option[Long] = {
-
-    request.session
-      .get("idUser")
-      .flatMap(_.toLongOption)
-  }
+  private def utilisateurConnecte(request: RequestHeader): Option[Long] =
+    request.session.get("userId").flatMap(_.toLongOption)
 
 //   // =====================================================
 //   // 1. AFFICHER TOUTES LES PANNES
@@ -69,7 +63,7 @@ class PanneController @Inject() (
 //   // 3. ENREGISTRER UNE NOUVELLE PANNE
 //   // =====================================================
 
-  def save: Action[AnyContent] = Action.async { request =>
+  def save: Action[AnyContent] = Action.async { implicit request =>
     val donnees =
       request.body.asFormUrlEncoded.getOrElse(Map.empty)
 
@@ -80,8 +74,7 @@ class PanneController @Inject() (
         .getOrElse("")
         .trim
 
-    val idUser =
-      utilisateurConnecte(request)
+    val idUser = utilisateurConnecte(request)
 
     val idAscenseur =
       scala.util.Try(valeur("idAscenseur").toLong).toOption
@@ -96,7 +89,7 @@ class PanneController @Inject() (
 
       case (None, _) =>
         Future.successful(
-          Redirect("/connexion")
+          Redirect("/login")
             .flashing("error" -> "Veuillez vous connecter")
         )
 
@@ -112,11 +105,9 @@ class PanneController @Inject() (
 
         panneService.signaler(panne).map {
 
-          case Right(id) =>
+          case Right(_) =>
             Redirect(routes.UtilisateurController.dashbord())
-              .flashing(
-                "success" -> "Votre signalement a été enregistré"
-              )
+              .flashing("success" -> "Votre signalement a été enregistré")
 
           case Left(erreur) =>
             Redirect(routes.UtilisateurController.dashbord())
@@ -126,9 +117,7 @@ class PanneController @Inject() (
       case _ =>
         Future.successful(
           Redirect(routes.UtilisateurController.dashbord())
-            .flashing(
-              "error" -> "Veuillez sélectionner un ascenseur valide"
-            )
+            .flashing("error" -> "Veuillez sélectionner un ascenseur valide")
         )
     }
   }

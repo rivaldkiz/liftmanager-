@@ -49,7 +49,7 @@ class AppelController @Inject() (
   // 3. ENREGISTRER UN NOUVEL APPEL
   // =====================================================
 
-  def save: Action[AnyContent] = Action.async { request =>
+  def save: Action[AnyContent] = Action.async { implicit request =>
     val donnees =
       request.body.asFormUrlEncoded.getOrElse(Map.empty)
 
@@ -60,8 +60,7 @@ class AppelController @Inject() (
         .getOrElse("")
         .trim
 
-    val idUser =
-      utilisateurConnecte(request)
+    val idUser = utilisateurConnecte(request)
 
     val depart =
       scala.util.Try(valeur("depart").toLong).toOption
@@ -70,10 +69,10 @@ class AppelController @Inject() (
       scala.util.Try(valeur("destination").toLong).toOption
 
     val avecBagages =
-      valeur("avecBagages") == "true"
+      donnees.contains("avecBagages")
 
-    // Retour sur la page résident, sur le même bâtiment si l'id a été envoyé
     val idBat = valeur("idBatiment")
+
     val urlResident =
       if (idBat.isEmpty) "/resident"
       else s"/resident?idBatiment=$idBat"
@@ -86,14 +85,6 @@ class AppelController @Inject() (
             .flashing("error" -> "Veuillez vous connecter")
         )
 
-      case (Some(_), Some(dep), Some(dest)) if dep == dest =>
-        Future.successful(
-          Redirect(urlResident)
-            .flashing(
-              "error" -> "Le départ et la destination doivent être différents"
-            )
-        )
-
       case (Some(user), Some(dep), Some(dest)) =>
 
         val appel = Appel(
@@ -102,8 +93,7 @@ class AppelController @Inject() (
           depart = dep,
           destination = dest,
           idSimulation = None,
-          direction =
-            "", // à calculer dans appelService.creer (MONTEE / DESCENTE)
+          direction = "",
           avecBagages = avecBagages
         )
 
@@ -125,7 +115,6 @@ class AppelController @Inject() (
         )
     }
   }
-
   // =====================================================
   // 4. AFFICHER LES DETAILS D'UN APPEL
   // =====================================================

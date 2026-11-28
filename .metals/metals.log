@@ -10771,3 +10771,4 @@ WARNING: Unmatched cancel notification for request id 9875
 2026.11.28 01:18:58 INFO  no build target found for C:\Users\franc\Desktop\elevatormanager\app\views\components\dashbord\appelForm.scala.html. Using presentation compiler with project's scala-library version: 3.3.8
 2026.11.28 01:19:01 INFO  scalafmt: excluded C:\Users\franc\Desktop\elevatormanager\app\views\components\dashbord\appelForm.scala.html (to format this file, update `project.excludeFilters` in .scalafmt.conf)
 2026.11.28 01:19:01 INFO  no build target found for C:\Users\franc\Desktop\elevatormanager\app\views\components\dashbord\appelForm.scala.html. Using presentation compiler with project's scala-library version: 3.3.8
+2026.11.28 01:19:21 INFO  no build target found for C:\Users\franc\Desktop\elevatormanager\app\views\components\dashbord\appelForm.scala.html. Using presentation compiler with project's scala-library version: 3.3.8

@@ -35,4 +35,8 @@ GET /resident       controllers.UtilisateurController.resident()
 #GET /filter
 
 #ROUTE POUR LES APPELS
-POST /create        controllers.AppelController.save()
+POST /appel        controllers.AppelController.save()
+
+
+#ROUTE POUR LES PANNES 
+POST /panne        controllers.PanneController.save()
